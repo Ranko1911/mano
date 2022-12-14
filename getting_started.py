@@ -60,11 +60,17 @@ with mp_hands.Hands(
       # list of finger tips locators, 4 is thumb, 20 is pinky finger
 
       # if alguna de los tips esta mas arriba que los mcp, conta el dedo, si no pues no lo cuenta
-        for i in range(0,5):
-          if int(lm[tipIds[i]].x*w) < int(lm[tipIds[i]-2].x*w):
+        for i in range(0,4):
+          if int(lm[tipIds[i]].y*w) < int(lm[tipIds[i]-2].y*w):
             fingers_up[i] = 1
           else:
             fingers_up[i] = 0
+
+        if int(lm[tipIds[0]].x*w) < int(lm[tipIds[0]-2].x*w):
+          fingers_up[0] = 1
+        else:
+          fingers_up[0] = 0
+
 
 
       #----------------
