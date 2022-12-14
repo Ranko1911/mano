@@ -40,15 +40,6 @@ with mp_hands.Hands(
             mp_drawing_styles.get_default_hand_landmarks_style(),
             mp_drawing_styles.get_default_hand_connections_style())
 
-      #----------------
-      # Detect fingers
-
-      # list of finger tips locators, 4 is thumb, 20 is pinky finger
-
-      # if alguna de los tips está más arriba que los mcp, conta el dedo, si no pues no lo cuenta
-
-      #----------------
-      
       # list of finger tips locators, 4 is thumb, 20 is pinky finger
         tipIds = [4, 8, 12, 16, 20]
       
@@ -57,22 +48,39 @@ with mp_hands.Hands(
       # x,y coordinates of pinky tip. Coordinates are normalized to [0.0,1.0] with width and height of the image
         lm[tipIds[4]].x
         lm[tipIds[4]].y
-
+        lm[tipIds[4]-2].x
+        lm[tipIds[4]-2].x
+    
       #height, width and depth (RGB=3) of image
         (h,w,d) = image.shape
+
+      #----------------
+      # Detect fingers
+        fingers_up = [0 , 0, 0, 0, 0]
+      # list of finger tips locators, 4 is thumb, 20 is pinky finger
+
+      # if alguna de los tips esta mas arriba que los mcp, conta el dedo, si no pues no lo cuenta
+        for i in range(0,5):
+          if int(lm[tipIds[i]].x*w) < int(lm[tipIds[i]-2].x*w):
+            fingers_up[i] = 1
+          else:
+            fingers_up[i] = 0
+
+
+      #----------------
 
       # OpenCV function to draw a circle:
       # cv2.circle(image, center_coordinates, radius in pixels, color (Blue 0-255, Green 0-255, Red 0-255), thickness in pixels (-1 solid))
       # Example: draw a red solid circle of 10 pixel radius in the tip of pinky finger:
-        cv2.circle(image, (int(lm[tipIds[4]].x*w),int(lm[tipIds[4]].y*h)), 10, (0,0,255), -1)
+      # cv2.circle(image, (int(lm[tipIds[4]].x*w),int(lm[tipIds[4]].y*h)), 10, (0,0,255), -1)
 
       # OpenCV function to draw text on image
       # cv2.putText(image, text, org, font, fontScale, color[, thickness[, lineType[, bottomLeftOrigin]]])
       # Example: draw a blue "hello" on the upper left corner of the image
-        cv2.putText(image, "hello", (20,60),cv2.FONT_HERSHEY_SIMPLEX,2,(255,0,0), thickness = 5)
+        cv2.putText(image, str(sum(fingers_up)), (20,60),cv2.FONT_HERSHEY_SIMPLEX,2,(255,0,0), thickness = 5)
 
       # See other OpenCV functions to draw a line or a rectangle:
-        cv2.line(image, (int(lm[tipIds[4]].x*w),int(lm[tipIds[4]].y*h)), (int(lm[tipIds[0]].x*w),int(lm[tipIds[0]].y*h)), (0,0,255) , thickness = 5) 
+      # cv2.line(image, (int(lm[tipIds[4]].x*w),int(lm[tipIds[4]].y*h)), (int(lm[tipIds[0]].x*w),int(lm[tipIds[0]].y*h)), (0,0,255) , thickness = 5) 
       # cv2.rectangle(image, start_point (top-left), end_point (bottom-right), color, thickness)
 
     cv2.imshow('MediaPipe Hands', image)    
